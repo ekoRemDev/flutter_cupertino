@@ -59,8 +59,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: CupertinoButton(
                     child: Text('This is #$i'),
                     onPressed: () {
-                      Navigator.of(context).push(CupertinoPageRoute(builder: (context){
-                          return DetailScreen( topic: i==0 ? "Articles" : "Views");
+                      Navigator.of(context)
+                          .push(CupertinoPageRoute(builder: (context) {
+                        return DetailScreen(
+                            topic: i == 0 ? "Articles" : "Views");
                       }));
                     },
                   ),
@@ -76,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class DetailScreen extends StatelessWidget {
   const DetailScreen({this.topic});
+
   final String topic;
 
   @override
@@ -84,6 +87,34 @@ class DetailScreen extends StatelessWidget {
         navigationBar: CupertinoNavigationBar(
           middle: Text("Details"),
         ),
-        child: Center(child: Text("Details for $topic"),));
+        child: Center(
+          child:
+              GestureDetector(
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(CupertinoPageRoute(builder: (context) {
+                      return MoreDetailScreen(
+                          moretopic: 'More topic is here');
+                    }));
+                  },
+                  child: Text("Details for $topic")),
+        ));
+  }
+}
+
+class MoreDetailScreen extends StatelessWidget {
+  const MoreDetailScreen({this.moretopic});
+
+  final String moretopic;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          middle: Text("More Details"),
+        ),
+        child: Center(
+          child: Text("More Details for $moretopic"),
+        ));
   }
 }
