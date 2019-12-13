@@ -1,10 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cupertino/screen_1.dart';
-import 'package:flutter_cupertino/screen_2.dart';
-import 'package:flutter_cupertino/screen_3.dart';
-import 'package:flutter_cupertino/screen_4.dart';
-import 'package:flutter_cupertino/screen_5.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,67 +27,63 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
   final String title;
 
+  MyHomePage({Key key, this.title}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  PageController _pageController;
-  int _currentTab = 0;
-
-
   @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
+  Widget build(BuildContext context) {
+    return CupertinoApp(
+      home: CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.book_solid), title: Text("Articles")),
+            BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.eye_solid), title: Text("Views")),
+          ],
+        ),
+        tabBuilder: (context, i) {
+          return CupertinoTabView(
+            builder: (context) {
+              return CupertinoPageScaffold(
+                navigationBar: CupertinoNavigationBar(
+                  middle: (i == 0) ? Text('Articles') : Text('Views'),
+                ),
+                child: Center(
+                  child: CupertinoButton(
+                    child: Text('This is #$i'),
+                    onPressed: () {
+                      Navigator.of(context).push(CupertinoPageRoute(builder: (context){
+                          return DetailScreen( topic: i==0 ? "Articles" : "Views");
+                      }));
+                    },
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
   }
+}
+
+class DetailScreen extends StatelessWidget {
+  const DetailScreen({this.topic});
+  final String topic;
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: PageView(
-        controller: _pageController,
-        children: <Widget>[
-          Screen1(),
-          Screen2(),
-          Screen3(),
-          Screen4(),
-          Screen5(),
-        ],
-        onPageChanged: (int index){
-          setState(() {
-            _currentTab = index;
-          });
-        },
-      ),
-      bottomNavigationBar: CupertinoTabBar(
-        currentIndex: _currentTab,
-        onTap: (int index){
-          setState(() {
-            _currentTab = index;
-          });
-          _pageController.animateToPage(index, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
-        },
-        activeColor: Colors.black,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home)),
-          BottomNavigationBarItem(icon: Icon(Icons.search)),
-          BottomNavigationBarItem(icon: Icon(Icons.photo)),
-          BottomNavigationBarItem(icon: Icon(Icons.home)),
-          BottomNavigationBarItem(icon: Icon(Icons.home)),
-        ],
-      ),
-      // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    return CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+          middle: Text("Details"),
+        ),
+        child: Center(child: Text("Details for $topic"),));
   }
 }
